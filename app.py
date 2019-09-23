@@ -1,6 +1,6 @@
 from flask import Flask, abort, make_response, jsonify, render_template
 
-from util.utils import Member
+from util.utils import Member,getSchedules
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -9,7 +9,7 @@ app.config['JSON_SORT_KEYS'] = False
 
 @app.route('/', methods=['GET'])
 def index():
-    api_list = ['/members', '/member/20']
+    api_list = ['/members', '/member/20','/schedules']
     return render_template('index.html', api_list=api_list)
 
 
@@ -73,6 +73,18 @@ def get_all_members():
 
     return make_response(jsonify(result))
 
+@app.route('/schedules',methods=['GET'])
+def get_all_schedules():
+    schedule_list = getSchedules()
+    result = {
+        "ResultInfo":{
+            "result":True,
+            "count":len(schedule_list),
+        },
+        "items":schedule_list
+    }
+
+    return  make_response(jsonify(result))
 
 @app.errorhandler(404)
 def not_found(error):
